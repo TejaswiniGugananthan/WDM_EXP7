@@ -1,97 +1,117 @@
-### EX7 Implementation of Link Analysis using HITS Algorithm
-### DATE: 
-### AIM: To implement Link Analysis using HITS Algorithm in Python.
-### Description:
-<div align = "justify">
-The HITS (Hyperlink-Induced Topic Search) algorithm is a link analysis algorithm used to rank web pages. It identifies authority and hub pages 
-in a network of web pages based on the structure of the links between them.
+<H3>NAME: LEANN JOBY MATHEW</H3>
+<H3>REGISTER NO: 212222230074</H3>
+<H3>EX. NO.5</H3>
+<H3>DATE: 24.10.2024</H3>
+<H1 ALIGN =CENTER>Implementation of XOR  using RBF</H1>
+<H3>Aim:</H3>
+To implement a XOR gate classification using Radial Basis Function  Neural Network.
 
-### Procedure:
-1. ***Initialization:***
-    <p>    a) Start with an initial set of authority and hub scores for each page.
-    <p>    b) Typically, initial scores are set to 1 or some random values.
-  
-2. ***Construction of the Adjacency Matrix:***
-    <p>    a) The web graph is represented as an adjacency matrix where each row and column correspond to a web page, and the matrix elements denote the presence or absence of links between pages.
-    <p>    b) If page A has a link to page B, the corresponding element in the adjacency matrix is set to 1; otherwise, it's set to 0.
+<H3>Theory:</H3>
+<P>Exclusive or is a logical operation that outputs true when the inputs differ.For the XOR gate, the TRUTH table will be as follows XOR truth table </P>
 
-3. ***Iterative Updates:***
-    <p>    a) Update the authority scores based on the hub scores of pages pointing to them and update the hub scores based on the authority scores of pages they point to.
-    <p>    b) Calculate authority scores as the sum of hub scores of pages pointing to the given page.
-    <p>    c) Calculate hub scores as the sum of authority scores of pages that the given page points to.
+<P>XOR is a classification problem, as it renders binary distinct outputs. If we plot the INPUTS vs OUTPUTS for the XOR gate, as shown in figure below </P>
 
-4. ***Normalization:***
-    <p>    a) Normalize authority and hub scores to prevent them from becoming too large or small.
-    <p>    b) Normalize by dividing by their Euclidean norms (L2-norm).
 
-5. ***Convergence Check:***
-    <p>    a) Check for convergence by measuring the change in authority and hub scores between iterations.
-    <p>    b) If the change falls below a predefined threshold or the maximum number of iterations is reached, the algorithm stops.
 
-6. ***Visualization:***
-    <p>    Visualize using bar chart to represent authority and hub scores.
 
-### Program:
+<P>The graph plots the two inputs corresponding to their output. Visualizing this plot, we can see that it is impossible to separate the different outputs (1 and 0) using a linear equation.
+A Radial Basis Function Network (RBFN) is a particular type of neural network. The RBFN approach is more intuitive than MLP. An RBFN performs classification by measuring the input’s similarity to examples from the training set. Each RBFN neuron stores a “prototype”, which is just one of the examples from the training set. When we want to classify a new input, each neuron computes the Euclidean distance between the input and its prototype. Thus, if the input more closely resembles the class A prototypes than the class B prototypes, it is classified as class A ,else class B.
+A Neural network with input layer, one hidden layer with Radial Basis function and a single node output layer (as shown in figure below) will be able to classify the binary data according to XOR output.
+</P>
 
-```python
+
+
+
+
+<H3>ALGORITHM:</H3>
+Step 1: Initialize the input  vector for you bit binary data<Br>
+Step 2: Initialize the centers for two hidden neurons in hidden layer<Br>
+Step 3: Define the non- linear function for the hidden neurons using Gaussian RBF<br>
+Step 4: Initialize the weights for the hidden neuron <br>
+Step 5 : Determine the output  function as 
+                 Y=W1*φ1 +W1 *φ2 <br>
+Step 6: Test the network for accuracy<br>
+Step 7: Plot the Input space and Hidden space of RBF NN for XOR classification.
+
+<H3>PROGRAM:</H3>
+
+python
 import numpy as np
 import matplotlib.pyplot as plt
 
-def hits_algorithm(adjacency_matrix, max_iterations=100, tol=1.0e-6):
-    num_nodes = len(adjacency_matrix)
-    authority_scores = np.ones(num_nodes)
-    hub_scores = np.ones(num_nodes)
-    
-    for i in range(max_iterations):
-        # Authority update
+def gaussian_rbf(x, landmark, gamma=1):
+    return np.exp(-gamma * np.linalg.norm(x - landmark)**2)
 
-             /*WRITE YOUR CODE HERE
-        
-        # Hub update
+def end_to_end(X1, X2, ys, mu1, mu2):
+    from_1 = [gaussian_rbf(np.array([X1[i], X2[i]]), mu1) for i in range(len(X1))]
+    from_2 = [gaussian_rbf(np.array([X1[i], X2[i]]), mu2) for i in range(len(X1))]
 
-             /*WRITE YOUR CODE HERE
-        
-        # Check convergence
+    plt.figure(figsize=(13, 5))
 
-             /*WRITE YOUR CODE HERE
-        
-        if authority_diff < tol and hub_diff < tol:
-            break
-        
-        authority_scores = new_authority_scores
-        hub_scores = new_hub_scores
-    
-    return authority_scores, hub_scores
+    plt.subplot(1, 2, 1)
+    plt.scatter((X1[0], X1[3]), (X2[0], X2[3]), label="Class_0")
+    plt.scatter((X1[1], X1[2]), (X2[1], X2[2]), label="Class_1")
+    plt.xlabel("$X1$", fontsize=15)
+    plt.ylabel("$X2$", fontsize=15)
+    plt.title("Xor: Linearly Inseparable", fontsize=15)
+    plt.legend()
 
-# Example adjacency matrix (replace this with your own data)
-# For simplicity, using a random adjacency matrix
-adj_matrix = np.array([
-    [0, 1, 1],
-    [1, 0, 0],
-    [1, 0, 0]
-])
+    plt.subplot(1, 2, 2)
+    plt.scatter(from_1[0], from_2[0], label="Class_0")
+    plt.scatter(from_1[1], from_2[1], label="Class_1")
+    plt.scatter(from_1[2], from_2[2], label="Class_1")
+    plt.scatter(from_1[3], from_2[3], label="Class_0")
+    plt.plot([0, 0.95], [0.95, 0], "k--")
+    plt.annotate("Seperating hyperplane", xy=(0.4, 0.55), xytext=(0.55, 0.66),
+                arrowprops=dict(facecolor='black', shrink=0.05))
+    plt.xlabel(f"$mu1$: {(mu1)}", fontsize=15)
+    plt.ylabel(f"$mu2$: {(mu2)}", fontsize=15)
+    plt.title("Transformed Inputs: Linearly Seperable", fontsize=15)
+    plt.legend()
 
-# Run HITS algorithm
-authority, hub = hits_algorithm(adj_matrix)
-for i in range(len(authority)):
-    print(f"Node {i}: Authority Score = {authority[i]:.4f}, Hub Score = {hub[i]:.4f}")
+    A = []
+    for i, j in zip(from_1, from_2):
+        temp = []
+        temp.append(i)
+        temp.append(j)
+        temp.append(1)
+        A.append(temp)
 
-# bar chart of authority vs hub scores
+    A = np.array(A)
+    W = np.linalg.inv(A.T.dot(A)).dot(A.T).dot(ys)
+    print(np.round(A.dot(W)))
+    print(ys)
+    print(f"Weights: {W}")
+    return W
 
-nodes = np.arange(len(authority))
-bar_width = 0.35
-plt.figure(figsize=(8, 6))
-plt.bar(nodes - bar_width/2, authority, bar_width, label='Authority', color='blue')
-plt.bar(nodes + bar_width/2, hub, bar_width, label='Hub', color='green')
-plt.xlabel('Node')
-plt.ylabel('Scores')
-plt.title('Authority and Hub Scores for Each Node')
-plt.xticks(nodes, [f'Node {i}' for i in nodes])
-plt.legend()
-plt.tight_layout()
-plt.show()
-```
+def predict_matrix(point, weights):
+    gaussian_rbf_0 = gaussian_rbf(point, mu1)
+    gaussian_rbf_1 = gaussian_rbf(point, mu2)
+    A = np.array([gaussian_rbf_0, gaussian_rbf_1, 1])
+    return np.round(A.dot(weights))
 
-### Output:
+# points
+x1 = np.array([0, 0, 1, 1])
+x2 = np.array([0, 1, 0, 1])
+ys = np.array([0, 1, 1, 0])
 
-### Result:
+# centers
+mu1 = np.array([0, 1])
+mu2 = np.array([1, 0])
+
+w = end_to_end(x1, x2, ys, mu1, mu2)
+
+# testing
+print(f"Input:{np.array([0, 0])}, Predicted: {predict_matrix(np.array([0, 0]), w)}")
+print(f"Input:{np.array([0, 1])}, Predicted: {predict_matrix(np.array([0, 1]), w)}")
+print(f"Input:{np.array([1, 0])}, Predicted: {predict_matrix(np.array([1, 0]), w)}")
+print(f"Input:{np.array([1, 1])}, Predicted: {predict_matrix(np.array([1, 1]), w)}")
+
+
+<H3>OUTPUT:</H3>
+
+![image](https://github.com/user-attachments/assets/669176e4-d937-42e4-b72d-16c0fa5184f3)
+
+
+<H3>Result:</H3>
+Thus , a Radial Basis Function Neural Network is implemented to classify XOR data.
